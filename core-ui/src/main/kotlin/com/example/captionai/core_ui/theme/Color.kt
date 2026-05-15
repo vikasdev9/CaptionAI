@@ -10,8 +10,8 @@ val PrimaryCyan = Color(0xFF00C2FF)
 val PrimaryPink = Color(0xFFFF4D8D)
 
 // Backgrounds
-val BackgroundBlack = Color(0xFF0F0F0F)
-val BackgroundDark = Color(0xFF121212)
+val BackgroundBlack = Color(0xFF121212)
+val BackgroundDark = Color(0xFF1E1E1E)
 val BackgroundCard = Color(0xFF1C1C1E)
 
 // Text

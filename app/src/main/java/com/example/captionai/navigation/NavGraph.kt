@@ -2,6 +2,7 @@ package com.example.captionai.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -172,62 +174,47 @@ fun BottomNavigationBar(navController: NavHostController, items: List<Screen>) {
     Surface(
         modifier = Modifier
             .padding(horizontal = 24.dp, vertical = 20.dp)
-            .clip(RoundedCornerShape(32.dp))
-            .background(Color.Transparent),
-        color = Color.White.copy(alpha = 0.05f),
+            .fillMaxWidth()
+            .height(72.dp)
+            .clip(RoundedCornerShape(36.dp)),
+        color = Color.Black.copy(alpha = 0.8f),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
     ) {
-        NavigationBar(
-            containerColor = Color.Transparent,
-            tonalElevation = 0.dp,
-            modifier = Modifier.height(72.dp)
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             items.forEach { screen ->
                 val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
-                NavigationBarItem(
-                    icon = {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = if (selected) {
-                                    Modifier
-                                        .size(48.dp)
-                                        .clip(CircleShape)
-                                        .background(PrimaryPurple.copy(alpha = 0.15f))
-                                } else Modifier
-                            ) {
-                                Icon(
-                                    screen.icon ?: Icons.Default.Home,
-                                    contentDescription = null,
-                                    tint = if (selected) Color.White else TextGray,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                            if (selected) {
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .size(4.dp)
-                                        .clip(CircleShape)
-                                        .background(PrimaryPurple)
-                                )
+                
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
                         }
-                    },
-                    selected = selected,
-                    onClick = {
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = Color.Transparent
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        screen.icon ?: Icons.Default.Home,
+                        contentDescription = null,
+                        tint = if (selected) PrimaryPurple else TextGray,
+                        modifier = Modifier.size(24.dp)
                     )
-                )
+                    Text(
+                        text = screen.route.replaceFirstChar { it.uppercase() },
+                        color = if (selected) PrimaryPurple else TextGray,
+                        fontSize = 10.sp,
+                        fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                    )
+                }
             }
         }
     }
