@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml:2:13-83
+INJECTED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml:2:13-83
+	package
+		INJECTED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml
+	xmlns:android
+		ADDED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml:2:23-81
+uses-sdk
+INJECTED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml reason: use-sdk injection requested
+INJECTED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml
+INJECTED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml
+	android:targetSdkVersion
+		INJECTED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml
+	android:minSdkVersion
+		INJECTED from D:\GitHubRepository\CaptionAI\data\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest14336631562731146100.xml

@@ -1,0 +1,2 @@
+-keep,allowobfuscation,allowshrinking class com.example.captionai.feature.caption.CaptionViewModel
+-keep,allowobfuscation,allowshrinking class com.example.captionai.feature.caption.CaptionViewModel
