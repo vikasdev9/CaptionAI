@@ -24,7 +24,8 @@ object DatabaseModule {
             context,
             CaptionAIDatabase::class.java,
             Constants.DATABASE_NAME
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

@@ -1,10 +1,12 @@
 package com.example.captionai.data.mapper
 
-import com.example.captionai.database.entity.PlannerNoteEntity
+import com.example.captionai.database.entity.PlannerItemEntity
 import com.example.captionai.database.entity.SavedContentEntity
 import com.example.captionai.domain.model.ContentType
 import com.example.captionai.domain.model.GeneratedContent
-import com.example.captionai.domain.model.PlannerNote
+import com.example.captionai.domain.model.PlannerItem
+import com.example.captionai.core.PlannerStatus
+import com.example.captionai.core.PlannerContentType
 
 fun SavedContentEntity.toDomain() = GeneratedContent(
     id = id,
@@ -20,18 +22,22 @@ fun GeneratedContent.toEntity() = SavedContentEntity(
     timestamp = timestamp
 )
 
-fun PlannerNoteEntity.toDomain() = PlannerNote(
+fun PlannerItemEntity.toDomain() = PlannerItem(
     id = id,
     title = title,
     description = description,
     date = date,
-    isCompleted = isCompleted
+    status = PlannerStatus.valueOf(status),
+    type = PlannerContentType.valueOf(type),
+    reminderEnabled = reminderEnabled
 )
 
-fun PlannerNote.toEntity() = PlannerNoteEntity(
+fun PlannerItem.toEntity() = PlannerItemEntity(
     id = id,
     title = title,
     description = description,
     date = date,
-    isCompleted = isCompleted
+    status = status.name,
+    type = type.name,
+    reminderEnabled = reminderEnabled
 )

@@ -3,10 +3,8 @@ package com.example.captionai.data.repository
 import com.example.captionai.core.ResultState
 import com.example.captionai.data.mapper.toDomain
 import com.example.captionai.data.mapper.toEntity
-import com.example.captionai.database.dao.PlannerDao
 import com.example.captionai.database.dao.SavedContentDao
 import com.example.captionai.domain.model.GeneratedContent
-import com.example.captionai.domain.model.PlannerNote
 import com.example.captionai.domain.repository.CaptionAIRepository
 import com.example.captionai.network.GeminiService
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class CaptionAIRepositoryImpl @Inject constructor(
     private val geminiService: GeminiService,
-    private val savedContentDao: SavedContentDao,
-    private val plannerDao: PlannerDao
+    private val savedContentDao: SavedContentDao
 ) : CaptionAIRepository {
 
     override suspend fun generateContent(prompt: String): ResultState<String> {
@@ -46,23 +43,5 @@ class CaptionAIRepositoryImpl @Inject constructor(
 
     override suspend fun deleteContent(content: GeneratedContent) {
         savedContentDao.deleteContent(content.toEntity())
-    }
-
-    override suspend fun addPlannerNote(note: PlannerNote) {
-        plannerDao.insertNote(note.toEntity())
-    }
-
-    override fun getPlannerNotes(): Flow<List<PlannerNote>> {
-        return plannerDao.getAllNotes().map { list ->
-            list.map { it.toDomain() }
-        }
-    }
-
-    override suspend fun updatePlannerNote(note: PlannerNote) {
-        plannerDao.updateNote(note.toEntity())
-    }
-
-    override suspend fun deletePlannerNote(note: PlannerNote) {
-        plannerDao.deleteNote(note.toEntity())
     }
 }

@@ -1,5 +1,6 @@
 package com.example.captionai.feature.planner
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,8 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,12 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.captionai.core_ui.components.*
 import com.example.captionai.core_ui.theme.*
-import com.example.captionai.domain.model.PlannerNote
+import com.example.captionai.core.PlannerContentType
+import com.example.captionai.core.PlannerStatus
+import com.example.captionai.domain.model.PlannerItem
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,229 +35,219 @@ fun PlannerScreen(
     onBack: () -> Unit,
     viewModel: PlannerViewModel = hiltViewModel()
 ) {
-    val notes by viewModel.notes.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
+    var showAddSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = BackgroundBlack,
         topBar = {
             TopAppBar(
-                title = { Text("Content Planner", color = Color.White) },
+                title = {
+                    Column {
+                        Text(
+                            text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(Date()),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextGray
+                        )
+                        Text(
+                            text = "Content Planner",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
                 },
+                actions = {
+                    IconButton(
+                        onClick = { showAddSheet = true },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(PrimaryPurple.copy(alpha = 0.2f))
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showDialog = true },
-                containerColor = PrimaryPurple,
-                contentColor = Color.White,
-                shape = CircleShape
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Note")
-            }
         }
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            // Productivity Dashboard Summary
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(24.dp)),
-                color = BackgroundCard
-            ) {
+            item {
+                HorizontalCalendar(
+                    selectedDate = uiState.selectedDate,
+                    onDateSelected = { viewModel.onDateSelected(it) }
+                )
+            }
+
+            item {
                 Row(
-                    modifier = Modifier.padding(20.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    PlannerStatCard(value = uiState.scheduledCount, label = "Scheduled", modifier = Modifier.weight(1f))
+                    PlannerStatCard(value = uiState.draftsCount, label = "Drafts", modifier = Modifier.weight(1f))
+                    PlannerStatCard(value = uiState.postedCount, label = "Posted", modifier = Modifier.weight(1f))
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.CalendarMonth,
-                        contentDescription = null,
-                        tint = PrimaryPurple,
-                        modifier = Modifier.size(32.dp)
+                    Text(
+                        text = "Today's schedule",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            text = "${notes.count { it.isCompleted }}/${notes.size} Posts Ready",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        )
-                        Text(
-                            text = "Keep up the great work!",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextGray
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Notifications, contentDescription = null, tint = TextGray, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Reminders", color = TextGray, style = MaterialTheme.typography.labelSmall)
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "Schedule",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (notes.isEmpty()) {
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Text("No content planned yet.", color = TextGray)
+            val filteredItems = uiState.items.filter { isSameDay(it.date, uiState.selectedDate) }
+            
+            if (filteredItems.isEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center) {
+                        Text("No tasks for this day.", color = TextGray)
+                    }
                 }
             } else {
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(bottom = 80.dp)
+                items(filteredItems) { item ->
+                    PlannerTaskCard(
+                        title = item.title,
+                        time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(item.date)),
+                        type = item.type,
+                        status = item.status,
+                        onClick = { /* Edit item */ }
+                    )
+                }
+            }
+
+            item {
+                AIInsightCard()
+            }
+
+            item {
+                Button(
+                    onClick = { showAddSheet = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .padding(vertical = 4.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    contentPadding = PaddingValues()
                 ) {
-                    items(notes) { note ->
-                        PlannerNoteItem(
-                            note = note,
-                            onDelete = { viewModel.deleteNote(note) },
-                            onToggle = { viewModel.toggleNoteCompletion(note) }
-                        )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(PrimaryGradient, RoundedCornerShape(28.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("+ Schedule new post", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
+            
+            item { Spacer(modifier = Modifier.height(80.dp)) }
         }
 
-        if (showDialog) {
-            AddNoteDialog(
-                onDismiss = { showDialog = false },
-                onAdd = { title, desc ->
-                    viewModel.addNote(title, desc, System.currentTimeMillis())
-                    showDialog = false
+        if (showAddSheet) {
+            AddPlannerItemSheet(
+                onDismiss = { showAddSheet = false },
+                onAdd = { title, desc, date, type, status ->
+                    viewModel.addItem(title, desc, date, type, status)
+                    showAddSheet = false
                 }
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlannerNoteItem(
-    note: PlannerNote,
-    onDelete: () -> Unit,
-    onToggle: () -> Unit
-) {
-    val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp)),
-        color = BackgroundCard
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = note.isCompleted,
-                onCheckedChange = { onToggle() },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = PrimaryPurple,
-                    uncheckedColor = TextGray,
-                    checkmarkColor = Color.White
-                )
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(modifier = Modifier.weight(1.0f)) {
-                Text(
-                    text = note.title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = if (note.isCompleted) TextGray else Color.White,
-                        textDecoration = if (note.isCompleted) TextDecoration.LineThrough else null
-                    )
-                )
-                if (note.description.isNotBlank()) {
-                    Text(
-                        text = note.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextGray,
-                        maxLines = 1
-                    )
-                }
-                Text(
-                    text = dateFormat.format(Date(note.date)),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = PrimaryPurple.copy(alpha = 0.7f),
-                    fontSize = 10.sp
-                )
-            }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Red.copy(alpha = 0.6f))
-            }
-        }
-    }
-}
-
-@Composable
-fun AddNoteDialog(
+fun AddPlannerItemSheet(
     onDismiss: () -> Unit,
-    onAdd: (String, String) -> Unit
+    onAdd: (String, String, Long, PlannerContentType, PlannerStatus) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
-
-    AlertDialog(
+    var selectedType by remember { mutableStateOf(PlannerContentType.POST) }
+    
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = BackgroundCard,
-        title = { Text("Plan New Content", color = Color.White, fontWeight = FontWeight.Bold) },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = PrimaryPurple,
-                        unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
-                    )
+        containerColor = BackgroundDark,
+        scrimColor = Color.Black.copy(alpha = 0.5f)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Schedule New Post", style = MaterialTheme.typography.titleLarge, color = Color.White, fontWeight = FontWeight.Bold)
+            
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Title") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = PrimaryPurple,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedTextField(
-                    value = desc,
-                    onValueChange = { desc = it },
-                    label = { Text("Description") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = PrimaryPurple,
-                        unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+            )
+
+            // Simple Type Selector
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                PlannerContentType.values().forEach { type ->
+                    val isSelected = selectedType == type
+                    FilterChip(
+                        selected = isSelected,
+                        onClick = { selectedType = type },
+                        label = { Text(type.name) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = PrimaryPurple,
+                            labelColor = if (isSelected) Color.White else TextGray
+                        )
                     )
-                )
+                }
             }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { onAdd(title, desc) },
-                enabled = title.isNotBlank()
+
+            Button(
+                onClick = { onAdd(title, desc, System.currentTimeMillis(), selectedType, PlannerStatus.SCHEDULED) },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryPurple),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Plan It", color = PrimaryPurple, fontWeight = FontWeight.Bold)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel", color = TextGray)
+                Text("Schedule", fontWeight = FontWeight.Bold)
             }
         }
-    )
+    }
+}
+
+private fun isSameDay(timeMillis: Long, calendar: Calendar): Boolean {
+    val itemCal = Calendar.getInstance().apply { timeInMillis = timeMillis }
+    return itemCal.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
+            itemCal.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
 }

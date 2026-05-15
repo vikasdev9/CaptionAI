@@ -1,9 +1,11 @@
 package com.example.captionai.data.di
 
 import com.example.captionai.data.repository.CaptionAIRepositoryImpl
+import com.example.captionai.data.repository.PlannerRepositoryImpl
 import com.example.captionai.data.repository.ProfileRepositoryImpl
 import com.example.captionai.data.repository.SettingsRepositoryImpl
 import com.example.captionai.domain.repository.CaptionAIRepository
+import com.example.captionai.domain.repository.PlannerRepository
 import com.example.captionai.domain.repository.ProfileRepository
 import com.example.captionai.domain.repository.SettingsRepository
 import dagger.Binds
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindProfileRepository(
         profileRepositoryImpl: ProfileRepositoryImpl
     ): ProfileRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPlannerRepository(
+        plannerRepositoryImpl: PlannerRepositoryImpl
+    ): PlannerRepository
 }

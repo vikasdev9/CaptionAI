@@ -1,7 +1,9 @@
 package com.example.captionai.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -36,9 +38,9 @@ sealed class Screen(val route: String, val icon: ImageVector? = null) {
     object Hashtag : Screen("hashtag")
     object Bio : Screen("bio")
     object Reels : Screen("reels")
-    object Planner : Screen("planner", Icons.Default.DateRange)
-    object Saved : Screen("saved", Icons.Default.Favorite)
-    object Profile : Screen("profile", Icons.Default.Person)
+    object Planner : Screen("planner", Icons.Default.CalendarToday)
+    object Saved : Screen("saved", Icons.Default.BookmarkBorder)
+    object Profile : Screen("profile", Icons.Default.PersonOutline)
     object Settings : Screen("settings")
     object Premium : Screen("premium")
     object Privacy : Screen("privacy")
@@ -169,33 +171,50 @@ fun BottomNavigationBar(navController: NavHostController, items: List<Screen>) {
 
     Surface(
         modifier = Modifier
-            .padding(horizontal = 20.dp, vertical = 12.dp)
-            .clip(RoundedCornerShape(32.dp)),
-        color = Color.White.copy(alpha = 0.05f)
+            .padding(horizontal = 24.dp, vertical = 20.dp)
+            .clip(RoundedCornerShape(32.dp))
+            .background(Color.Transparent),
+        color = Color.White.copy(alpha = 0.05f),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
     ) {
         NavigationBar(
             containerColor = Color.Transparent,
             tonalElevation = 0.dp,
-            modifier = Modifier.height(64.dp)
+            modifier = Modifier.height(72.dp)
         ) {
             items.forEach { screen ->
                 val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
                 NavigationBarItem(
                     icon = {
-                        Icon(
-                            screen.icon ?: Icons.Default.Home,
-                            contentDescription = null,
-                            tint = if (selected) PrimaryPurple else TextGray
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = if (selected) {
+                                    Modifier
+                                        .size(48.dp)
+                                        .clip(CircleShape)
+                                        .background(PrimaryPurple.copy(alpha = 0.15f))
+                                } else Modifier
+                            ) {
+                                Icon(
+                                    screen.icon ?: Icons.Default.Home,
+                                    contentDescription = null,
+                                    tint = if (selected) Color.White else TextGray,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                            if (selected) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .size(4.dp)
+                                        .clip(CircleShape)
+                                        .background(PrimaryPurple)
+                                )
+                            }
+                        }
                     },
                     selected = selected,
-                    label = { 
-                        Text(
-                            screen.route.replaceFirstChar { it.uppercase() }, 
-                            color = if (selected) PrimaryPurple else TextGray,
-                            fontSize = 10.sp
-                        ) 
-                    },
                     onClick = {
                         navController.navigate(screen.route) {
                             popUpTo(navController.graph.findStartDestination().id) {

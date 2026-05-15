@@ -1,20 +1,20 @@
 package com.example.captionai.database.dao
 
 import androidx.room.*
-import com.example.captionai.database.entity.PlannerNoteEntity
+import com.example.captionai.database.entity.PlannerItemEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlannerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNote(note: PlannerNoteEntity)
+    suspend fun insertItem(item: PlannerItemEntity)
 
-    @Query("SELECT * FROM planner_notes ORDER BY date ASC")
-    fun getAllNotes(): Flow<List<PlannerNoteEntity>>
+    @Query("SELECT * FROM planner_items ORDER BY date ASC")
+    fun getAllItems(): Flow<List<PlannerItemEntity>>
 
     @Update
-    suspend fun updateNote(note: PlannerNoteEntity)
+    suspend fun updateItem(item: PlannerItemEntity)
 
     @Delete
-    suspend fun deleteNote(note: PlannerNoteEntity)
+    suspend fun deleteItem(item: PlannerItemEntity)
 }
