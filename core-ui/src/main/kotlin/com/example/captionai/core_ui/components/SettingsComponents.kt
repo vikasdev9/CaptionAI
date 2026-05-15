@@ -10,7 +10,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -120,7 +121,7 @@ fun SettingsNavigationItem(
             Text(text = trailingText, color = TextGray, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(end = 8.dp))
         }
         
-        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = TextSoftGray, modifier = Modifier.size(20.dp))
+        Icon(Icons.Default.KeyboardArrowRight, contentDescription = null, tint = TextSoftGray, modifier = Modifier.size(20.dp))
     }
 }
 
@@ -188,17 +189,3 @@ fun PremiumButton(
     }
 }
 
-@Composable
-fun GlassCard(
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(24.dp))
-            .background(GlassGradient)
-            .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
-    ) {
-        content()
-    }
-}

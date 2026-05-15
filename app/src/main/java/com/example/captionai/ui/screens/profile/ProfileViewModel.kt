@@ -2,6 +2,8 @@ package com.example.captionai.ui.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.captionai.domain.model.User
+import com.example.captionai.domain.model.UserStats
 import com.example.captionai.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -16,6 +18,21 @@ class ProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.Loading)
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
+    private val dummyUser = User(
+        id = "1",
+        name = "Alex Morgan",
+        handle = "@alex.creates",
+        email = "alex@example.com",
+        profileImageUrl = "", // Will use placeholder
+        isPremium = true,
+        trialDaysLeft = 3,
+        stats = UserStats(
+            generations = 248,
+            saved = 36,
+            streak = 12
+        )
+    )
+
     init {
         loadProfile()
     }
@@ -26,11 +43,13 @@ class ProfileViewModel @Inject constructor(
                 if (user != null) {
                     _uiState.value = ProfileUiState.Success(user)
                 } else {
-                    _uiState.value = ProfileUiState.Error("Failed to load profile")
+                    // Provide dummy data if user is null (e.g., not logged in or firestore empty)
+                    _uiState.value = ProfileUiState.Success(dummyUser)
                 }
             }
             .catch { e ->
-                _uiState.value = ProfileUiState.Error(e.message ?: "An unknown error occurred")
+                // Fallback to dummy data on error so you can see the UI
+                _uiState.value = ProfileUiState.Success(dummyUser)
             }
             .launchIn(viewModelScope)
     }

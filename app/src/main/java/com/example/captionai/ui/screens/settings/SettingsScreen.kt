@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,22 +37,28 @@ fun SettingsScreen(
     Scaffold(
         containerColor = BackgroundBlack,
         topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        "Settings", 
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleLarge
-                    ) 
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(alpha = 0.5f)) // Glassy effect
+            ) {
+                TopAppBar(
+                    title = { 
+                        Text(
+                            "Settings", 
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge
+                        ) 
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            }
         }
     ) { padding ->
         LazyColumn(
@@ -60,6 +68,7 @@ fun SettingsScreen(
                 .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // ... items ...
             item { Spacer(modifier = Modifier.height(12.dp)) }
 
             // PREFERENCES SECTION
@@ -70,9 +79,11 @@ fun SettingsScreen(
                         title = "Push Notifications",
                         subtitle = "Reminders & AI suggestions",
                         checked = uiState.isNotificationsEnabled,
-                        onCheckedChange = { viewModel.onEvent(SettingsEvents.ToggleNotifications(it)) }
+                        onCheckedChange = { 
+                            viewModel.onEvent(SettingsEvents.ToggleNotifications(it)) 
+                        }
                     )
-                    Divider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsToggleItem(
                         icon = Icons.Default.DarkMode,
                         title = "Dark Mode",
@@ -80,7 +91,7 @@ fun SettingsScreen(
                         checked = uiState.isDarkMode,
                         onCheckedChange = { viewModel.onEvent(SettingsEvents.ToggleDarkMode(it)) }
                     )
-                    Divider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsNavigationItem(
                         icon = Icons.Default.Language,
                         title = "Language",
@@ -99,7 +110,7 @@ fun SettingsScreen(
                         trailingText = "Pro Trial",
                         onClick = onNavigateToPremium
                     )
-                    Divider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsNavigationItem(
                         icon = Icons.Default.Security,
                         title = "Privacy & Data",
@@ -116,13 +127,13 @@ fun SettingsScreen(
                         title = "Terms of Service",
                         onClick = { /* Open URL */ }
                     )
-                    Divider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsNavigationItem(
                         icon = Icons.Default.Policy,
                         title = "Privacy Policy",
                         onClick = { /* Open URL */ }
                     )
-                    Divider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -137,7 +148,7 @@ fun SettingsScreen(
 
             // LOGOUT BUTTON
             item {
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = { 
                         viewModel.onEvent(SettingsEvents.Logout)
@@ -145,18 +156,23 @@ fun SettingsScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(56.dp)
+                        .padding(horizontal = 12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     shape = RoundedCornerShape(28.dp),
                     contentPadding = PaddingValues()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(28.dp)),
-                        contentAlignment = Alignment.Center
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = Color.White.copy(alpha = 0.05f),
+                        shape = RoundedCornerShape(28.dp),
+                        border = BorderStroke(1.dp, PrimaryPink.copy(alpha = 0.2f))
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Icon(Icons.Default.Logout, contentDescription = null, tint = PrimaryPink)
                             Spacer(modifier = Modifier.width(12.dp))
                             Text("Log out", color = PrimaryPink, fontWeight = FontWeight.Bold)

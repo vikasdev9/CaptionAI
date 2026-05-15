@@ -48,7 +48,7 @@ fun PrivacyScreen(onNavigateBack: () -> Unit) {
                         title = "What we collect",
                         onClick = { /* Info dialog */ }
                     )
-                    Divider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(color = Color.White.copy(alpha = 0.05f), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsNavigationItem(
                         icon = Icons.Default.Download,
                         title = "Export My Data",
