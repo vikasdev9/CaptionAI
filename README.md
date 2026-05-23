@@ -33,3 +33,12 @@ A production-ready Android application built with Clean Architecture, Multi-Modu
 - **Bio Generator**: Create creative social media bios.
 - **Content Planner**: Add and manage content ideas with Room persistence.
 - **Dark Mode Support**: Fully compatible with Material 3 dynamic color and dark theme.
+
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/SplashScreen.png" width="24%" alt="Splash Screen" />
+  <img src="screenshots/SignInSignUP.png" width="24%" alt="Sign In / Sign Up" />
+  <img src="screenshots/Dashboard.png" width="24%" alt="Dashboard" />
+  <img src="screenshots/Calendar.png" width="24%" alt="Calendar" />
+</p>
