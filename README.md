@@ -2,6 +2,28 @@
 
 A production-ready Android application built with Clean Architecture, Multi-Module setup, and Gemini AI.
 
+## Screenshots
+
+### Splash Screen
+<p align="center">
+  <img src="screenshots/SplashScreen.png" width="30%" alt="Splash Screen" />
+</p>
+
+### Sign In / Sign Up
+<p align="center">
+  <img src="screenshots/SignInSignUP.png" width="30%" alt="Sign In / Sign Up" />
+</p>
+
+### Dashboard
+<p align="center">
+  <img src="screenshots/Dashboard.png" width="30%" alt="Dashboard" />
+</p>
+
+### Calendar (Content Planner)
+<p align="center">
+  <img src="screenshots/Calendar.png" width="30%" alt="Calendar" />
+</p>
+
 ## Architecture
 - **Clean Architecture**: separation of concerns into Presentation, Domain, and Data layers.
 - **MVVM**: UI state management using StateFlow and ViewModels.
@@ -33,12 +55,3 @@ A production-ready Android application built with Clean Architecture, Multi-Modu
 - **Bio Generator**: Create creative social media bios.
 - **Content Planner**: Add and manage content ideas with Room persistence.
 - **Dark Mode Support**: Fully compatible with Material 3 dynamic color and dark theme.
-
-## Screenshots
-
-<p align="center">
-  <img src="screenshots/SplashScreen.png" width="24%" alt="Splash Screen" />
-  <img src="screenshots/SignInSignUP.png" width="24%" alt="Sign In / Sign Up" />
-  <img src="screenshots/Dashboard.png" width="24%" alt="Dashboard" />
-  <img src="screenshots/Calendar.png" width="24%" alt="Calendar" />
-</p>
