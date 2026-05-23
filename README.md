@@ -4,25 +4,16 @@ A production-ready Android application built with Clean Architecture, Multi-Modu
 
 ## Screenshots
 
-### Splash Screen
-<p align="center">
-  <img src="screenshots/SplashScreen.png" width="30%" alt="Splash Screen" />
-</p>
-
-### Sign In / Sign Up
-<p align="center">
-  <img src="screenshots/SignInSignUP.png" width="30%" alt="Sign In / Sign Up" />
-</p>
-
-### Dashboard
-<p align="center">
-  <img src="screenshots/Dashboard.png" width="30%" alt="Dashboard" />
-</p>
-
-### Calendar (Content Planner)
-<p align="center">
-  <img src="screenshots/Calendar.png" width="30%" alt="Calendar" />
-</p>
+<table align="center">
+  <tr>
+    <td align="center"><b>Splash Screen</b><br><img src="screenshots/SplashScreen.png" width="400" alt="Splash Screen" /></td>
+    <td align="center"><b>Sign In / Sign Up</b><br><img src="screenshots/SignInSignUP.png" width="400" alt="Sign In / Sign Up" /></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Dashboard</b><br><img src="screenshots/Dashboard.png" width="400" alt="Dashboard" /></td>
+    <td align="center"><b>Calendar (Content Planner)</b><br><img src="screenshots/Calendar.png" width="400" alt="Calendar" /></td>
+  </tr>
+</table>
 
 ## Architecture
 - **Clean Architecture**: separation of concerns into Presentation, Domain, and Data layers.
